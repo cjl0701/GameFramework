@@ -1,13 +1,13 @@
 package com.example.gameframework;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 
@@ -15,26 +15,32 @@ import androidx.annotation.NonNull;
 //SurfaceHolder가 Surface에 미리 그리고 이 Surface가 SurfaceView에 반영되는 방식
 //SurfaceHolder.Callback의 순수 가상 메서드 구현 필요. 실제 작업 수행은 SurfaceHolder.Callback이 수행.
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
+    private IState m_state;
     private GameViewThread m_thread; //뷰에 렌더링할 스레드. SurfaceHolder의 callback 에서 이 thread를 사용해서 작업을 수행
+    private GraphicObject m_image; //그림을 그리는 클래스
+    private SpriteAnimation m_spr; //애니메이션 구성
 
     public GameView(Context context) {
         super(context);
-
-        //키 입력 처리를 받기 위해서
-        setFocusable(true);
+        setFocusable(true); //키 입력 처리를 받기 위해서
 
         AppManager.getInstance().setGameView(this);
         AppManager.getInstance().setResources(getResources());
 
         getHolder().addCallback(this); // SurfaceHolder에 이 클래스에 있는 callback을 등록
+
+        changeGameState(new IntroState()); //첫 게임 상태 값
+
         m_thread=new GameViewThread(getHolder(), this);
+        m_image = new GraphicObject(AppManager.getInstance().getBitmap(R.drawable.background2));
+        //m_spr=new SpriteAnimation(AppManager.getInstance().getBitmap(R.drawable.walk));
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-//        Bitmap _scratch = BitmapFactory.decodeResource(getResources(), R.drawable.icon,null);
-//        canvas.drawColor(Color.BLACK);
-//        canvas.drawBitmap(_scratch, 10,10,null);
+        canvas.drawColor(Color.BLACK);
+        //m_state.render(canvas);
+        m_image.draw(canvas);
     }
 
     //데이터의 자동 갱신
@@ -42,9 +48,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     //GameViewThread의 run 메서드에서 update() 메서드를 실행하게 함
     //화면과 관련된 이벤트가 발생하지 않아도 게임 루프가 계속 돌아가는 기반
     public void update(){
-
-
+        m_state.update();
     }
+
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
         //surface가 생성되면 Rendering할 Thread를 시작
@@ -74,5 +80,22 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return m_state.onKeyDown(keyCode,event);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        return m_state.onTouchEvent(event);
+    }
+
+    public void changeGameState(IState state){
+        if(m_state!=null)
+            m_state.destroy();
+        state.init();
+        m_state=state;
     }
 }

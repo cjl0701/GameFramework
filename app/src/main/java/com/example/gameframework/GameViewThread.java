@@ -1,5 +1,6 @@
 package com.example.gameframework;
 
+import android.annotation.SuppressLint;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
@@ -21,6 +22,7 @@ public class GameViewThread extends Thread {
         m_run = run;
     }
 
+    @SuppressLint("WrongCall")
     @Override
     public void run() {
         Canvas canvas;
@@ -32,13 +34,12 @@ public class GameViewThread extends Thread {
                 canvas=m_surfaceHolder.lockCanvas(null);
                 //동기화를 유지하면서 canvas에 ~을 버퍼에 그린다.
                 synchronized (m_surfaceHolder){ //m_surfaceHolder을 기준으로 한 동기화 블록
-                    m_gameView.draw(canvas); //그림을 그림
+                    m_gameView.onDraw(canvas); // 그림을 그림
                 }
             }finally{
                 //canvas의 내용을 view에 전송한다.
                 if(canvas!=null)
-                    //Surface를 화면에 표시
-                    m_surfaceHolder.unlockCanvasAndPost(canvas);
+                    m_surfaceHolder.unlockCanvasAndPost(canvas); //Surface를 화면에 표시
             }
         }
     }
