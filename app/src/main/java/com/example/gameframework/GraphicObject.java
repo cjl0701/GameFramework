@@ -3,9 +3,12 @@ package com.example.gameframework;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+//그림을 표시하는 데 필요한 멤버 변수와 처리 과정을 하나의 클래스로 만들면 편리
+//그래픽을 쉽게 그리기 위한 GraphicObject
 public class GraphicObject {
-    private Bitmap m_bitmap;
-    private int m_x, m_y;
+    protected Bitmap m_bitmap;
+    protected int m_x;
+    protected int m_y;
 
     public GraphicObject(Bitmap bitmap) {
         this.m_bitmap = bitmap;
@@ -13,9 +16,8 @@ public class GraphicObject {
         m_y=0;
     }
 
-    public void draw(Canvas canvas){
-        canvas.drawBitmap(m_bitmap,m_x,m_y,null);
-    }
+    public void draw(Canvas canvas){ canvas.drawBitmap(m_bitmap,m_x,m_y,null); }
+
     public void setPosition(int x, int y){
         m_x=x;
         m_y=y;

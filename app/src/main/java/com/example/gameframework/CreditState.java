@@ -15,12 +15,10 @@ public class CreditState implements IState {
     }
 
     @Override
-    public void destroy() {
-    }
+    public void destroy() { }
 
     @Override
-    public void update() {
-    }
+    public void update() { }
 
     @Override
     public void render(Canvas canvas) {

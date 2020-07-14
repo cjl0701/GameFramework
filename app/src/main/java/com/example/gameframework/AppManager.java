@@ -3,6 +3,7 @@ package com.example.gameframework;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.DisplayMetrics;
 
 //이 프레임워크를 사용하는 애플리케이션을 관리
 //AppManager를 통해 어느 클래스에서도 뷰와 리소스 등에 접근할 수 있도록
@@ -12,19 +13,21 @@ public class AppManager {
 
     private GameView m_gameView; //Main GameView
     private Resources m_resources; //Main GameView의 Resources
+    private int displayWidth;
+    private int displayHeight;
 
     private AppManager() { //외부에서 new 연산자로 인스턴스 생성 불가능
         super();
     }
 
-    public static AppManager getInstance(){
-        if(s_instance==null)
-            s_instance=new AppManager();
+    public static AppManager getInstance() {
+        if (s_instance == null)
+            s_instance = new AppManager();
         return s_instance;
     }
 
     //자주 쓰이는 비트맵 관련 기능 추가
-    public Bitmap getBitmap(int r){
+    public Bitmap getBitmap(int r) {
         return BitmapFactory.decodeResource(m_resources, r);
     }
 
@@ -42,5 +45,12 @@ public class AppManager {
 
     public void setResources(Resources resources) {
         this.m_resources = resources;
+
+        displayHeight = m_resources.getDisplayMetrics().heightPixels;
+        displayWidth = m_resources.getDisplayMetrics().widthPixels;
     }
+
+    public int getDisplayWidth() { return displayWidth; }
+
+    public int getDisplayHeight() { return displayHeight; }
 }

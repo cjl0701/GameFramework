@@ -5,25 +5,27 @@ import android.graphics.Canvas;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-public class IntroState implements IState{
+public class IntroState implements IState {
     Bitmap icon;
     int x, y;
 
     @Override
     public void init() {
-        icon=AppManager.getInstance().getBitmap(R.drawable.icon);
+        icon = AppManager.getInstance().getBitmap(R.drawable.icon);
     }
 
     @Override
-    public void destroy() {   }
+    public void destroy() { }
 
     @Override
-    public void update() {   }
+    public void update() { }
 
     @Override
     public void render(Canvas canvas) {
-        x=100; y=100;
-        canvas.drawBitmap(icon,x,y,null);
+        int width = canvas.getWidth();
+        int height = icon.getHeight();
+        icon = Bitmap.createScaledBitmap(icon, width, height, true);
+        canvas.drawBitmap(icon, x, y, null);
     }
 
     @Override
