@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
 
+import com.example.game.GameState;
+
 //이 프레임워크를 사용하는 애플리케이션을 관리
 //AppManager를 통해 어느 클래스에서도 뷰와 리소스 등에 접근할 수 있도록
 //SingleTon 패턴을 적용
@@ -13,6 +15,8 @@ public class AppManager {
 
     private GameView m_gameView; //Main GameView
     private Resources m_resources; //Main GameView의 Resources
+    private GameState m_gameState;
+
     private int displayWidth;
     private int displayHeight;
 
@@ -47,4 +51,7 @@ public class AppManager {
         displayHeight = m_resources.getDisplayMetrics().heightPixels;
         displayWidth = m_resources.getDisplayMetrics().widthPixels;
     }
+    public GameState getGameState() { return m_gameState; }
+
+    public void setGameState(GameState gameState) { this.m_gameState = gameState; }
 }

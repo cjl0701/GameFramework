@@ -21,8 +21,10 @@ public class Enemy extends SpriteAnimation {
     public int state = STATE_NORMAL;
 
     Rect m_boundBox = new Rect();
-    private int width;
-    private int height;
+    protected int width;
+    protected int height;
+
+    private long lastShoot = System.currentTimeMillis(); //발사 시간 정보 저장
 
     public Enemy(Bitmap bitmap) {
         super(bitmap);
@@ -33,6 +35,7 @@ public class Enemy extends SpriteAnimation {
     @Override
     public void update(long gameTime) { //이동
         super.update(gameTime); //애니메이션 프레임 변경
+        attack(); //미사일 발사
         move();
         if (m_y > displayHeight) state = STATE_OUT; //화면 밖에 나가면 삭제
     }
@@ -57,5 +60,13 @@ public class Enemy extends SpriteAnimation {
         }
     }
 
-    void attack() { }
+    //이전에 발사했던 시간을 저장해서 현재 시간과 이전에 발사했던 시간을 비교 해서 시간이 어느정도 흐르면 미사일을 다시 발사
+    void attack() {
+        //일정 간격을 두고 미사일 객체를 생성하고, GameState의 멤버 변수인 enemmlist에 추가
+        //이를 위해 GameState를 AppManager에 추가해서 GameState를 전역 변수처럼 접근할 수 있게
+        if (System.currentTimeMillis() - lastShoot >= 4000) {
+            lastShoot = System.currentTimeMillis();
+            AppManager.getInstance().getGameState().getEnemmsList().add(new Missile_Enemy(m_x, m_y+height));
+        }
+    }
 }

@@ -30,10 +30,11 @@ public class GameState implements IState {
 
     @Override
     public void init() {
+        AppManager.getInstance().setGameState(this);
         Bitmap player = AppManager.getInstance().getBitmap(R.drawable.player);
         m_player = new Player(player);
         m_playerSpeed = 5;
-        m_backGround = new BackGround(0);
+        m_backGround = new BackGround(1); //0,1에 따라 배경화면 바뀜
         //m_keypad=new GraphicObject(AppManager.getInstance().getBitmap(R.drawable.keypad));
         //m_keypad.setPosition(0,460-120);
 
@@ -42,8 +43,7 @@ public class GameState implements IState {
     }
 
     @Override
-    public void destroy() {
-    }
+    public void destroy() { }
 
     @Override
     public void update() {
@@ -52,13 +52,15 @@ public class GameState implements IState {
         m_player.update(gameTime);
         m_backGround.update(gameTime);
 
+        //플레이어 미사일
         for (int i = m_pmsList.size() - 1; i >= 0; i--) {
             Missile_Player pms = m_pmsList.get(i);
-            pms.update(); //미사일 발사
+            pms.update(); //미사일 이동
             //화면 밖으로 나간 객체를 각 리스트에서 제거
             if (pms.state == Missile.STATE_OUT) m_pmsList.remove(i);
         }
 
+        //적
         for (int i = m_enemyList.size() - 1; i >= 0; i--) {
             Enemy enemy = m_enemyList.get(i);
             enemy.update(gameTime); //이동
@@ -66,7 +68,14 @@ public class GameState implements IState {
             if (enemy.state == Enemy.STATE_OUT) m_enemyList.remove(i);
         }
 
-        makeEnemy();
+        //적 미사일
+        for ( int i = m_enemmsList .size( )-1; i >= 0; i--)  {
+            Missile_Enemy enemms = m_enemmsList.get(i);
+            enemms.update(); //미사일 이동
+            if(enemms.state==Missile.STATE_OUT) m_enemmsList.remove(i);
+        }
+
+            makeEnemy();
         checkCollision();
     }
 
@@ -75,6 +84,7 @@ public class GameState implements IState {
         m_backGround.draw(canvas);
         for (Missile_Player pms : m_pmsList) pms.draw(canvas);
         for (Enemy enemy : m_enemyList) enemy.draw(canvas);
+        for (Missile_Enemy enemms : m_enemmsList) enemms.draw(canvas);
         m_player.draw(canvas);
         //m_keypad.draw(canvas);
 
@@ -106,9 +116,7 @@ public class GameState implements IState {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return false;
-    }
+    public boolean onTouchEvent(MotionEvent event) { return false; }
 
     public void makeEnemy() {
         if (System.currentTimeMillis() - lastRegenEnemy >= 3000) { //생성 시점 이후 3초가 넘으면
@@ -129,7 +137,7 @@ public class GameState implements IState {
 
     //충돌하면 삭제
     public void checkCollision() {
-        //미사일과 적이 충돌하면 제거
+        //플레이어 미사일과 적의 충돌 처리
         for (int i = m_pmsList.size() - 1; i >= 0; i--) {
             for (int j = m_enemyList.size() - 1; j >= 0; j--) {
                 if (CollisionManager.checkBoxToBox(m_pmsList.get(i).m_boundBox, m_enemyList.get(j).m_boundBox)) {
@@ -140,7 +148,7 @@ public class GameState implements IState {
             }
         }
 
-        //캐릭터와 적의 충돌
+        //캐릭터와 적의 충돌 처리
         //플레이어의 생명 값을 내리는 destroyPalyer 메서드 호출하고,
         //getLife 메서드를 통해 현재 플레이어의 생명이 0 이면 게임을 종료
         for (int i = m_enemyList.size() - 1; i >= 0; i--) {
@@ -150,5 +158,16 @@ public class GameState implements IState {
                 if (m_player.getLife() <= 0) System.exit(0);
             }
         }
+
+        //적 미사일과 플레이어의 충돌 처리
+        for ( int i = m_enemmsList .size( )-1; i >= 0; i--){
+            if(CollisionManager.checkBoxToBox(m_player.m_boundBox, m_enemmsList.get(i).m_boundBox)){
+                m_enemmsList.remove(i);
+                m_player.destroyPlayer();
+                if (m_player.getLife() <= 0) System.exit(0);
+            }
+        }
     }
+
+    public ArrayList<Missile_Enemy> getEnemmsList() { return m_enemmsList; }
 }
