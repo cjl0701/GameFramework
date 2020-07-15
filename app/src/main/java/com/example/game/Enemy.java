@@ -1,6 +1,7 @@
 package com.example.game;
 
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 
 import com.example.gameframework.AppManager;
 import com.example.gameframework.SpriteAnimation;
@@ -19,6 +20,10 @@ public class Enemy extends SpriteAnimation {
     public static final int STATE_OUT = 1;
     public int state = STATE_NORMAL;
 
+    Rect m_boundBox = new Rect();
+    int width;
+    int height;
+
     public Enemy(Bitmap bitmap) {
         super(bitmap);
         displayHeight = AppManager.getInstance().getDisplayHeight();
@@ -26,10 +31,10 @@ public class Enemy extends SpriteAnimation {
     }
 
     @Override
-    public void update(long gameTime) {
-        super.update(gameTime);
+    public void update(long gameTime) { //이동
+        super.update(gameTime); //애니메이션 프레임 변경
         move();
-        if (m_y > 350) state = STATE_OUT; //화면 밖에 나가면 삭제
+        if (m_y > displayHeight) state = STATE_OUT; //화면 밖에 나가면 삭제
     }
 
     void move() {
@@ -52,7 +57,5 @@ public class Enemy extends SpriteAnimation {
         }
     }
 
-    void attack() {
-
-    }
+    void attack() { }
 }

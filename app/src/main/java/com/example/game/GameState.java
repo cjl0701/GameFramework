@@ -64,6 +64,7 @@ public class GameState implements IState {
         }
 
         makeEnemy();
+        checkCollision();
     }
 
     @Override
@@ -114,6 +115,19 @@ public class GameState implements IState {
             enemy.moveType = randEnemy.nextInt(3);
 
             m_enemyList.add(enemy);
+        }
+    }
+
+    //충돌하면 삭제
+    public void checkCollision() {
+        for (int i = m_pmsList.size() - 1; i >= 0; i--) {
+            for (int j = m_enemyList.size() - 1; j >= 0; j--) {
+                if (CollisionManager.checkBoxToBox(m_pmsList.get(i).m_boundBox, m_enemyList.get(j).m_boundBox)) {
+                    m_pmsList.remove(i);
+                    m_enemyList.remove(j);
+                    return; //일단 루프에서 빠져나옴
+                }
+            }
         }
     }
 }
