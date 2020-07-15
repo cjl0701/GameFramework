@@ -2,6 +2,8 @@ package com.example.game;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -18,10 +20,11 @@ public class GameState implements IState {
     private Player m_player;
     private int m_playerSpeed;
     private BackGround m_backGround;
-    ArrayList<Enemy> m_enemyList = new ArrayList<>();
-    ArrayList<Missile_Player> m_pmsList = new ArrayList<>();
-    long lastRegenEnemy = System.currentTimeMillis();
-    Random randEnemy = new Random();
+    private ArrayList<Enemy> m_enemyList = new ArrayList<>();
+    private ArrayList<Missile_Player> m_pmsList = new ArrayList<>();
+    private ArrayList<Missile_Enemy> m_enemmsList = new ArrayList<>();
+    private long lastRegenEnemy = System.currentTimeMillis();
+    private Random randEnemy = new Random();
     private int displayWidth;
     private int characterSize;
 
@@ -74,6 +77,12 @@ public class GameState implements IState {
         for (Enemy enemy : m_enemyList) enemy.draw(canvas);
         m_player.draw(canvas);
         //m_keypad.draw(canvas);
+
+        //플레이어의 생명 표시
+        Paint paint = new Paint();
+        paint.setTextSize(100);
+        paint.setColor(Color.BLACK);
+        canvas.drawText("남은 목숨: " + String.valueOf(m_player.getLife()), 0, 100, paint);
     }
 
     @Override
@@ -120,6 +129,7 @@ public class GameState implements IState {
 
     //충돌하면 삭제
     public void checkCollision() {
+        //미사일과 적이 충돌하면 제거
         for (int i = m_pmsList.size() - 1; i >= 0; i--) {
             for (int j = m_enemyList.size() - 1; j >= 0; j--) {
                 if (CollisionManager.checkBoxToBox(m_pmsList.get(i).m_boundBox, m_enemyList.get(j).m_boundBox)) {
@@ -127,6 +137,17 @@ public class GameState implements IState {
                     m_enemyList.remove(j);
                     return; //일단 루프에서 빠져나옴
                 }
+            }
+        }
+
+        //캐릭터와 적의 충돌
+        //플레이어의 생명 값을 내리는 destroyPalyer 메서드 호출하고,
+        //getLife 메서드를 통해 현재 플레이어의 생명이 0 이면 게임을 종료
+        for (int i = m_enemyList.size() - 1; i >= 0; i--) {
+            if (CollisionManager.checkBoxToBox(m_player.m_boundBox, m_enemyList.get(i).m_boundBox)) {
+                m_enemyList.remove(i); //충돌한 적 제거
+                m_player.destroyPlayer();
+                if (m_player.getLife() <= 0) System.exit(0);
             }
         }
     }

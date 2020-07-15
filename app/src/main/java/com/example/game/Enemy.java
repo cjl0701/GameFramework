@@ -21,8 +21,8 @@ public class Enemy extends SpriteAnimation {
     public int state = STATE_NORMAL;
 
     Rect m_boundBox = new Rect();
-    int width;
-    int height;
+    private int width;
+    private int height;
 
     public Enemy(Bitmap bitmap) {
         super(bitmap);

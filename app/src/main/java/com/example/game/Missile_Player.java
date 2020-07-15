@@ -12,6 +12,7 @@ public class Missile_Player extends Missile {
     public Missile_Player(int x, int y) {
         super(AppManager.getInstance().getBitmap(R.drawable.missile_1));
         this.setPosition(x, y); //x, y는 미사일 발사 위치
+
         width = m_bitmap.getWidth();
         height = m_bitmap.getHeight();
     }

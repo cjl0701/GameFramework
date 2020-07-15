@@ -16,9 +16,7 @@ public class AppManager {
     private int displayWidth;
     private int displayHeight;
 
-    private AppManager() { //외부에서 new 연산자로 인스턴스 생성 불가능
-        super();
-    }
+    private AppManager() { super(); } //외부에서 new 연산자로 인스턴스 생성 불가능
 
     public static AppManager getInstance() {
         if (s_instance == null)
@@ -26,11 +24,12 @@ public class AppManager {
         return s_instance;
     }
 
-    //자주 쓰이는 비트맵 관련 기능 추가
-    public Bitmap getBitmap(int r) {
-        return BitmapFactory.decodeResource(m_resources, r);
-    }
+    //자주 쓰이는 기능 추가
+    public Bitmap getBitmap(int r) { return BitmapFactory.decodeResource(m_resources, r); }
+    public int getDisplayWidth() { return displayWidth; }
+    public int getDisplayHeight() { return displayHeight; }
 
+    //Getter & Setter
     public GameView getGameView() {
         return m_gameView;
     }
@@ -45,12 +44,7 @@ public class AppManager {
 
     public void setResources(Resources resources) {
         this.m_resources = resources;
-
         displayHeight = m_resources.getDisplayMetrics().heightPixels;
         displayWidth = m_resources.getDisplayMetrics().widthPixels;
     }
-
-    public int getDisplayWidth() { return displayWidth; }
-
-    public int getDisplayHeight() { return displayHeight; }
 }
