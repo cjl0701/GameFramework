@@ -1,6 +1,9 @@
 # Framework for shooting game on Android   
-슈팅 게임 제작에 활용할 수 있는 프레임워크 제작
+슈팅 게임 제작에 활용할 수 있는 프레임워크 제작   
+*게임 개발에 필요한 기반 틀과 기능을 미리 만들어 게임 제작 전반에 재사용*   
 >이를 기반으로 game 패키지에 간단한 슈팅 게임 제작   
+>![image](https://user-images.githubusercontent.com/55947154/113501274-c9339f00-955e-11eb-8a33-7f72dc734f27.png)
+
 
 <br><br>
 
@@ -10,7 +13,7 @@
 
 2. GameViewThread : GameView에 렌더링할 스레드. 게임 루프가 돌아가는 기반   
 
-3. IState 인터페이스 : 각 게임 상태에 State 패턴을 적용하기 위한 인터페이스   
+3. IState 인터페이스 : 각 게임 상태에 **State pattern**을 적용하기 위한 인터페이스   
 
 4. GraphicObject : 그래픽을 그리기 위한 메소드를 모아 놓은 클래스   
 
